@@ -32,18 +32,13 @@ int main(int argc, char * argv[]) {
 
     instream.open(argv[1]);
     outstream.open(argv[2]);
-    string hi;
 
     instream >> numcases;
-    // cout << "DEBUG: numcases is " << (unsigned short) numcases << endl;
     while (numcases > 0) {
         instream >> numclasses >> width >> height;
-        // cout << "DEBUG: numclasses is " << (unsigned short) numclasses << ", width is " << width << ", height is " << height << endl;
 
         while (numclasses > 0) {
-            // cout << "DEBUG: iterator numclasses is " << (unsigned short) numclasses << endl;
             instream >> shipclass >> timeval;
-            // std::cout << shipclass << " " << timeval << std::endl;
             classidx[(shipclass - 0x41)] = timeval;
             numclasses--;
         }
@@ -93,9 +88,9 @@ int main(int argc, char * argv[]) {
             y = get<2>(first);
             currDistance = get<0>(first);
             priority.pop();
+            
             // if the top of priority queue is at the edges of the grid, found exit
             if ((x == 0) || (x == width - 1) || (y == 0) || (y == height - 1)){
-                // std::cout << "what " << std::endl;
                 break;
             } 
 
