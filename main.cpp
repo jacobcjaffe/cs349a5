@@ -10,8 +10,6 @@ using namespace std;
 ofstream outstream;
 ifstream instream;
 
-void printweight(int ** weight);
-
 // tuple for x value, y value, weight for djikstra's algorithm
 typedef tuple<int, int, int> p;
 
@@ -62,8 +60,7 @@ int main(int argc, char * argv[]) {
             weight[i] = new int[width];
             visited[i] = new bool[width] {0};
         }
-        unsigned short iterator = 0;
-        unsigned short iterator2 = 0;
+
         string gridline;
         int x = -1;
         int y = -1;
@@ -71,6 +68,8 @@ int main(int argc, char * argv[]) {
             instream >> gridline;
             for(int j = 0; j < width; j++) {
                 grid[i][j] = gridline[j];
+
+                // save values when enterprise is found
                 if(gridline[j] == 'E') {
                     weight[i][j] = 0;
                     visited[i][j] = true;
@@ -81,7 +80,6 @@ int main(int argc, char * argv[]) {
                     weight[i][j] = INT_MAX;
                 }
             }
-            // std::cout << grid[i] << std::endl;
         }
 
         // add location of enterprise to priority queue
@@ -89,37 +87,32 @@ int main(int argc, char * argv[]) {
 
         bool found = false;
         int currDistance;
-        while (!found) {
+        while (1) {
             p first = priority.top();
             x = get<1>(first);
             y = get<2>(first);
             currDistance = get<0>(first);
             priority.pop();
-            // std::cout << "case " << numcases << " searching, x: " << x << " y: " << y << " distance: " << currDistance << std::endl;
-            // if the top of priority queue is 0
+            // if the top of priority queue is at the edges of the grid, found exit
             if ((x == 0) || (x == width - 1) || (y == 0) || (y == height - 1)){
                 // std::cout << "what " << std::endl;
                 break;
             } 
-            // cout << "what the fuck" << endl;
+
             // update surrounding weights from current position
-            if (x < width - 1 && visited[y][x+1] == false){
-                // cout << "updating x " << x+1 << endl;
+            if (x < width - 1 && visited[y][x+1] == false && weight[y][x+1] > weight[y][x] + classidx[grid[y][x+1] - 0x41]){
                 weight[y][x+1] = weight[y][x] + classidx[grid[y][x+1] - 0x41];
                 priority.push(make_tuple(weight[y][x+1], x + 1, y));
             }
             if (x > 0 && visited[y][x-1] == false && weight[y][x-1] > weight[y][x] + classidx[grid[y][x-1] - 0x41]) {
-                // cout << "updating x " << x-1 << endl;
                 weight[y][x-1] = weight[y][x] + classidx[grid[y][x-1] - 0x41];
                 priority.push(make_tuple(weight[y][x-1], x - 1, y));
             }
             if (y < height - 1 && visited[y + 1][x] == false && weight[y+1][x] > weight[y][x] + classidx[grid[y+1][x] - 0x41]) {
-                // cout << "updating y " << y+1 << endl;
                 weight[y+1][x] = weight[y][x] + classidx[grid[y+1][x] - 0x41];
                 priority.push(make_tuple(weight[y+1][x], x, y + 1));
             }
             if (y > 0 && visited[y-1][x] == false && weight[y-1][x] > weight[y][x] + classidx[grid[y-1][x] - 0x41]) {
-                // cout << "updating y " << y-1 << endl;
                 weight[y-1][x] = weight[y][x] + classidx[grid[y-1][x] - 0x41];
                 priority.push(make_tuple(weight[y-1][x], x, y - 1));
             }
@@ -145,8 +138,4 @@ int main(int argc, char * argv[]) {
     instream.close();
     outstream.close();
     return 0;
-}
-
-void printweight(int ** weight, int x, int y){
-
 }
